@@ -1,4 +1,4 @@
-version: 0.0.5
+version: 0.0.6
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -86,7 +86,7 @@ productState:
     enforceSchema: false
     enforceSchemaMethod: Warning
     catalogType: glue
-  refreshInterval: None
+  refreshInterval: 0 10 * * *
 transformation:
   - alias: Spark_SQL_1
     type: SQL
