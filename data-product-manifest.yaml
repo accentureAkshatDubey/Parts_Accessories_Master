@@ -1,4 +1,4 @@
-version: 0.0.4
+version: 0.0.5
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -62,6 +62,18 @@ productState:
       MRP_1:
         type: STRING
         description: Mrp
+      etl_inserted_date:
+        type: DATETIME
+        description: ETL pipeline data insert date
+      etl_modified_date:
+        type: DATETIME
+        description: ETL pipeline modification date
+      etl_created_by:
+        type: STRING
+        description: ETL pipeline created by
+      etl_updated_by:
+        type: STRING
+        description: ETL pipeline updated by
   stateStoreType: loadDataIceberg
   isProfilingEnabled: false
   updateStrategy: Overwrite
@@ -80,8 +92,11 @@ transformation:
     type: SQL
     description: tranforming data for part and accessories master
     query: select x.PART_NUM, c.PART_NUM as PART_NUM_VAR, x.DEALER_MAP_CD,
-      x.ROOT_PART_NUM, x.PRINCIPAL_MAP_CD, x.CATG_CD, x.PART_DESC, c.MRP_1 from
-      PM_PART_VAR c left join PM_PART x ON c.PART_NUM = x.PART_NUM;
+      x.ROOT_PART_NUM, x.PRINCIPAL_MAP_CD, x.CATG_CD, x.PART_DESC, c.MRP_1,
+      current_timestamp() as etl_inserted_date, current_timestamp() as
+      etl_modified_date, 'platform_admin' as etl_created_by, 'platform_admin' as
+      etl_updated_by from PM_PART_VAR c left join PM_PART x ON c.PART_NUM =
+      x.PART_NUM;
     sequenceNo: 3
     references:
       - alias: PM_PART_VAR_1
