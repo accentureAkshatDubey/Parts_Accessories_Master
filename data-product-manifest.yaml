@@ -1,4 +1,4 @@
-version: 0.0.15
+version: 0.0.16
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -40,7 +40,16 @@ productState:
       PART_NUM_VAR:
         type: STRING
         description: part number variant
-      DEALER_MAP_CD:
+      DEALER_MAP_CODE_VAR:
+        type: STRING
+        description: Dealer map code from pm part var
+      LOCATION_CODE_VAR:
+        type: STRING
+        description: location code from pm part var
+      PARENT_GROUP_VAR:
+        type: STRING
+        description: parent group from pm part var
+      DEALER_MAP_CODE:
         type: STRING
         description: Dealer map code
       ROOT_PART_NUM:
