@@ -1,4 +1,4 @@
-version: 0.0.10
+version: 0.0.11
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -88,7 +88,7 @@ transformation:
     type: SQL
     description: tranforming data for part and accessories master
     query: select distinct  x.PART_NUM, c.PART_NUM as PART_NUM_VAR, c.DEALER_MAP_CD
-      as DEALER_MAP_CODE_VAR, C.LOC_CD AS LOCATION_CODE_VAR x.DEALER_MAP_CD as
+      as DEALER_MAP_CODE_VAR, C.LOC_CD AS LOCATION_CODE_VAR, x.DEALER_MAP_CD as
       DEALER_MAP_CODE, x.ROOT_PART_NUM, x.PRINCIPAL_MAP_CD, x.CATG_CD,
       x.PART_DESC, c.MRP_1, current_timestamp() as etl_inserted_date,
       current_timestamp() as etl_modified_date, 'platform_admin' as
