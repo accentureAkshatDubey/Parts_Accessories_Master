@@ -1,4 +1,4 @@
-version: 0.0.6
+version: 0.0.9
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -7,31 +7,27 @@ discoveryPort:
   name: Parts_Accessories_Master
 inputPorts:
   - alias: PM_PART_VAR_1
-    description: PM_PART_VAR
-    tags: []
-    extra: {}
-    syncType: pull
-    type: s3-parquet
-    dataSetUrn: urn:dv:dataset:be3642f1-63ce-4142-a2aa-a85145b9b04b
-    filter: ""
-    projection: []
-    persistDataFrame: false
-    entity:
+    isDynamic: true
+    path: s3://msil-data-lake-raw/dms/muldms/transaction/full/pm_part_var/
+    optional:
+      persistDataFrame: false
       advanceOptions:
         mergeSchema: true
+      enableDataReconciliation: false
+      enforceSchema: false
+      dataSetUrn: urn:dv:dataset:be3642f1-63ce-4142-a2aa-a85145b9b04b
+    type: inputParquet
   - alias: PM_PART_1
-    description: PM_PART
-    tags: []
-    extra: {}
-    syncType: pull
-    type: s3-parquet
-    dataSetUrn: urn:dv:dataset:8cc05d9e-b549-4519-a886-97978d7b837b
-    filter: ""
-    projection: []
-    persistDataFrame: false
-    entity:
+    isDynamic: true
+    path: s3://msil-data-lake-raw/dms/muldms/master/full/pm_part/
+    optional:
+      persistDataFrame: false
       advanceOptions:
         mergeSchema: true
+      enableDataReconciliation: false
+      enforceSchema: false
+      dataSetUrn: urn:dv:dataset:8cc05d9e-b549-4519-a886-97978d7b837b
+    type: inputParquet
 productState:
   isDynamic: true
   alias: INGESTING_THE_DATA_INTO_ATHENA
@@ -91,7 +87,7 @@ transformation:
   - alias: Spark_SQL_1
     type: SQL
     description: tranforming data for part and accessories master
-    query: select x.PART_NUM, c.PART_NUM as PART_NUM_VAR, x.DEALER_MAP_CD,
+    query: select distinct  x.PART_NUM, c.PART_NUM as PART_NUM_VAR, x.DEALER_MAP_CD,
       x.ROOT_PART_NUM, x.PRINCIPAL_MAP_CD, x.CATG_CD, x.PART_DESC, c.MRP_1,
       current_timestamp() as etl_inserted_date, current_timestamp() as
       etl_modified_date, 'platform_admin' as etl_created_by, 'platform_admin' as
