@@ -1,4 +1,4 @@
-version: 0.0.16
+version: 0.0.34
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -6,17 +6,6 @@ alias: INGESTING_THE_DATA_INTO_ATHENA
 discoveryPort:
   name: Parts_Accessories_Master
 inputPorts:
-  - alias: PM_PART_VAR_1
-    isDynamic: true
-    path: s3://msil-data-lake-raw/dms/muldms/transaction/full/pm_part_var/
-    optional:
-      persistDataFrame: false
-      advanceOptions:
-        mergeSchema: true
-      enableDataReconciliation: false
-      enforceSchema: false
-      dataSetUrn: urn:dv:dataset:be3642f1-63ce-4142-a2aa-a85145b9b04b
-    type: inputParquet
   - alias: PM_PART_1
     isDynamic: true
     path: s3://msil-data-lake-raw/dms/muldms/master/full/pm_part/
@@ -27,6 +16,30 @@ inputPorts:
       enableDataReconciliation: false
       enforceSchema: false
       dataSetUrn: urn:dv:dataset:8cc05d9e-b549-4519-a886-97978d7b837b
+    type: inputParquet
+  - alias: PM_PART_VAR_1
+    isDynamic: true
+    path: s3://msil-data-lake-raw/dms/muldms/transaction/*/pm_part_var/pm_part_var_202*.parquet
+    optional:
+      persistDataFrame: false
+      advanceOptions:
+        mergeSchema: false
+      enableDataReconciliation: false
+      enforceSchema: false
+      connection: Digital Sales S3 Connectivity
+      dataSetUrn: urn:dv:dataset:be3642f1-63ce-4142-a2aa-a85145b9b04b
+    type: inputParquet
+  - alias: PM_ACC_CATG_MAST__1
+    isDynamic: true
+    path: s3://msil-data-lake-raw/dms/muldms/master/full/pm_acc_catg_mast/
+    optional:
+      persistDataFrame: false
+      advanceOptions:
+        mergeSchema: true
+      enableDataReconciliation: false
+      enforceSchema: false
+      connection: Digital Sales S3 Connectivity
+      dataSetUrn: urn:dv:dataset:86e13999-b4e3-4d6a-ba69-73bb4f7ff7d3
     type: inputParquet
 productState:
   isDynamic: true
@@ -93,22 +106,39 @@ productState:
     catalogType: glue
   refreshInterval: 0 10 * * *
 transformation:
+  - alias: Spark_SQL_2
+    type: SQL
+    description: selecting distinct records
+    query: "select distinct *, nvl(modified_date,created_date) as date_check from
+      (select distinct
+      part_num,loc_cd,dealer_map_cd,parent_group,modified_date,created_date,max\
+      (MRP_1) from pm_part_var_test group by
+      part_num,loc_cd,dealer_map_cd,parent_group,modified_date,created_date)
+      ppvt "
+    sequenceNo: 3
+    references:
+      - alias: PM_PART_VAR_1
+        sqlReference: pm_part_var_test
   - alias: Spark_SQL_1
     type: SQL
     description: tranforming data for part and accessories master
     query: select distinct  x.PART_NUM, c.PART_NUM as PART_NUM_VAR, c.DEALER_MAP_CD
       as DEALER_MAP_CODE_VAR, C.LOC_CD AS LOCATION_CODE_VAR, C.parent_group AS
       PARENT_GROUP_VAR, x.DEALER_MAP_CD as DEALER_MAP_CODE, x.ROOT_PART_NUM,
-      x.PRINCIPAL_MAP_CD, x.CATG_CD, x.PART_DESC, c.MRP_1, current_timestamp()
-      as etl_inserted_date, current_timestamp() as etl_modified_date,
+      x.PRINCIPAL_MAP_CD, x.CATG_CD as CATG_CD, x.PART_DESC, c.MRP_1 as mrp_1,
+      y.catg_desc as category_description, current_timestamp() as
+      etl_inserted_date, current_timestamp() as etl_modified_date,
       'platform_admin' as etl_created_by, 'platform_admin' as etl_updated_by
-      from PM_PART_VAR c left join PM_PART x ON c.PART_NUM = x.PART_NUM
-    sequenceNo: 3
+      from PM_PART_VAR c inner join PM_PART x ON c.PART_NUM = x.PART_NUM  inner
+      join pm_acc_catg_mast y on x.catg_type = y.catg_type
+    sequenceNo: 5
     references:
-      - alias: PM_PART_VAR_1
-        sqlReference: PM_PART_VAR
       - alias: PM_PART_1
         sqlReference: PM_PART
+      - alias: PM_ACC_CATG_MAST__1
+        sqlReference: pm_acc_catg_mast
+      - alias: Spark_SQL_2
+        sqlReference: PM_PART_VAR
 controlPort:
   dataQualityRules:
     RecordCountCheck:
