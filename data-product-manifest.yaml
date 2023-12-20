@@ -1,4 +1,4 @@
-version: 0.0.35
+version: 0.0.36
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -97,12 +97,10 @@ transformation:
   - alias: Spark_SQL_2
     type: SQL
     description: selecting distinct records
-    query: "select distinct *, nvl(modified_date,created_date) as date_check from
+    query: select distinct *, nvl(modified_date,created_date) as date_check from
       (select distinct
-      part_num,loc_cd,dealer_map_cd,parent_group,modified_date,created_date,max\
-      (MRP_1) from pm_part_var_test group by
-      part_num,loc_cd,dealer_map_cd,parent_group,modified_date,created_date)
-      ppvt "
+      part_num,loc_cd,dealer_map_cd,parent_group,modified_date,created_date,MRP_1
+      from pm_part_var_test ) ppvt
     sequenceNo: 3
     references:
       - alias: PM_PART_VAR_1
