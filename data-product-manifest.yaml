@@ -1,4 +1,4 @@
-version: 0.0.36
+version: 0.0.37
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -83,8 +83,8 @@ productState:
   stateStoreType: loadDataIceberg
   isProfilingEnabled: false
   updateStrategy: Overwrite
-  tableName: msil_transformed_layer.Parts_Accessories_Master
-  warehousePath: s3://dlp-platform-engine-bucket/
+  tableName: msil_dataverse_marketing_and_sales_catalog.Parts_Accessories_Master
+  warehousePath: s3://msil-dataverse-marketing-and-sales/
   catalogName: glue
   optional:
     persistDataFrame: false
@@ -108,14 +108,14 @@ transformation:
   - alias: Spark_SQL_1
     type: SQL
     description: tranforming data for part and accessories master
-    query: "select distinct  x.PART_NUM, c.PART_NUM as PART_NUM_VAR, c.DEALER_MAP_CD
-      as DEALER_MAP_CODE_VAR, C.LOC_CD AS LOCATION_CODE_VAR, C.parent_group AS
-      PARENT_GROUP_VAR, x.DEALER_MAP_CD as DEALER_MAP_CODE, x.ROOT_PART_NUM,
-      x.PRINCIPAL_MAP_CD, x.CATG_CD as CATG_CD, x.PART_DESC, c.MRP_1 as mrp_1,
-      current_timestamp() as etl_inserted_date, current_timestamp() as
-      etl_modified_date, 'platform_admin' as etl_created_by, 'platform_admin' as
-      etl_updated_by from PM_PART_VAR c inner join PM_PART x ON c.PART_NUM =
-      x.PART_NUM "
+    query: "select distinct  x.PART_NUM as Part_Number, c.DEALER_MAP_CD as
+      Dealer_Map_Code, C.LOC_CD AS LOCATION_CODE, C.parent_group AS
+      PARENT_GROUP, x.ROOT_PART_NUM as Root_Part_Number, x.PRINCIPAL_MAP_CD as
+      Principal_Map_Code, x.CATG_CD as Part_Category, x.PART_DESC as
+      Part_Description, c.MRP_1 as MRP, current_timestamp() as
+      etl_inserted_date, current_timestamp() as etl_modified_date,
+      'platform_admin' as etl_created_by, 'platform_admin' as etl_updated_by
+      from PM_PART_VAR c inner join PM_PART x ON c.PART_NUM = x.PART_NUM "
     sequenceNo: 4
     references:
       - alias: PM_PART_1
