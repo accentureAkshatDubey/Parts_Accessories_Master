@@ -1,4 +1,4 @@
-version: 0.0.45
+version: 0.0.46
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -36,6 +36,11 @@ productState:
   retentionVersions: ""
   logicalSchema:
     properties:
+      columnname:
+        type: STRING
+        description: Description
+        sourceColumn: source column
+        sourceTable: source table
       PART_NUM:
         type: STRING
         description: Part number
