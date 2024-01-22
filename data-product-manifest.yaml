@@ -1,4 +1,4 @@
-version: 0.0.46
+version: 0.0.49
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -36,56 +36,81 @@ productState:
   retentionVersions: ""
   logicalSchema:
     properties:
-      columnname:
-        type: STRING
-        description: Description
-        sourceColumn: source column
-        sourceTable: source table
       PART_NUM:
         type: STRING
         description: Part number
+        sourceColumn: PART_NUM
+        sourceTable: pm_part
       PART_NUM_VAR:
         type: STRING
         description: part number variant
+        sourceColumn: PART_NUM
+        sourceTable: pm_part_var
       DEALER_MAP_CODE_VAR:
         type: STRING
         description: Dealer map code from pm part var
+        sourceColumn: DEALER_MAP_CD
+        sourceTable: pm_part_var
       LOCATION_CODE_VAR:
         type: STRING
         description: location code from pm part var
+        sourceColumn: LOC_CD
+        sourceTable: pm_part_var
       PARENT_GROUP_VAR:
         type: STRING
         description: parent group from pm part var
+        sourceColumn: parent_group
+        sourceTable: pm_part_var
       DEALER_MAP_CODE:
         type: STRING
         description: Dealer map code
-      ROOT_PART_NUM:
+        sourceColumn: DEALER_MAP_CD
+        sourceTable: pm_part
+      Root_Part_Number:
         type: STRING
         description: Root part number
-      PRINCIPAL_MAP_CD:
+        sourceColumn: ROOT_PART_NUM
+        sourceTable: pm_part
+      Principal_Map_Code:
         type: STRING
         description: Principal map code
-      CATG_CD:
+        sourceColumn: PRINCIPAL_MAP_CD
+        sourceTable: pm_part
+      Part_Category:
         type: STRING
         description: Category code
-      PART_DESC:
+        sourceColumn: CATG_CD
+        sourceTable: pm_part
+      Part_Description:
         type: STRING
         description: Part description
+        sourceColumn: PART_DESC
+        sourceTable: pm_part
       MRP_1:
         type: STRING
         description: Mrp
+        sourceColumn: MRP_1
+        sourceTable: pm_part_var
       etl_inserted_date:
         type: DATETIME
         description: ETL pipeline data insert date
+        sourceColumn: manual
+        sourceTable: manual
       etl_modified_date:
         type: DATETIME
         description: ETL pipeline modification date
+        sourceColumn: manual
+        sourceTable: manual
       etl_created_by:
         type: STRING
         description: ETL pipeline created by
+        sourceColumn: manual
+        sourceTable: manual
       etl_updated_by:
         type: STRING
         description: ETL pipeline updated by
+        sourceColumn: manual
+        sourceTable: manual
   stateStoreType: loadDataIceberg
   isProfilingEnabled: false
   updateStrategy: Overwrite
