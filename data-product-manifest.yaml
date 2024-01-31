@@ -1,10 +1,10 @@
-version: 0.0.49
+version: 0.0.50
 jobId: "737"
-jobName: Parts_Accessories_Master
+jobName: Parts Accessories Master
 jobType: Source Aligned Data Product
 alias: INGESTING_THE_DATA_INTO_ATHENA
 discoveryPort:
-  name: Parts_Accessories_Master
+  name: Parts Accessories Master
 inputPorts:
   - alias: PM_PART_1
     isDynamic: true
@@ -163,4 +163,6 @@ controlPort:
 outputPort:
   subscriptionChannels:
     - channelType: Postgres
+      queryType: SQL
+    - channelType: Dataproduct
       queryType: SQL
