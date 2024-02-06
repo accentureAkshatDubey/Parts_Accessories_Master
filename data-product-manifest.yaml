@@ -1,4 +1,4 @@
-version: 0.0.51
+version: 0.0.52
 jobId: "737"
 jobName: Parts Accessories Master
 jobType: Source Aligned Data Product
@@ -30,6 +30,16 @@ inputPorts:
       connection: msil-dataverse-marketing-and-sales
       dataSetUrn: urn:dv:dataset:be3642f1-63ce-4142-a2aa-a85145b9b04b
     type: inputParquet
+  - alias: qacp_part_1
+    isDynamic: true
+    tableLocation: s3://msil-data-lake-curated/sr2/ppc_de/qacp_part
+    optional:
+      persistDataFrame: false
+      enableDataReconciliation: false
+      enforceSchema: false
+      connection: Critical Parameter S3 Connectivity
+      dataSetUrn: urn:dv:dataset:e9b625f5-b897-457a-ac99-d6ac54f5a193
+    type: readDeltaTable
 productState:
   isDynamic: true
   alias: INGESTING_THE_DATA_INTO_ATHENA
@@ -139,20 +149,30 @@ transformation:
   - alias: Spark_SQL_1
     type: SQL
     description: tranforming data for part and accessories master
-    query: "select distinct  x.PART_NUM as Part_Number, c.DEALER_MAP_CD as
-      Dealer_Map_Code, C.LOC_CD AS LOCATION_CODE, C.parent_group AS
-      PARENT_GROUP, x.ROOT_PART_NUM as Root_Part_Number, x.PRINCIPAL_MAP_CD as
-      Principal_Map_Code, x.CATG_CD as Part_Category, x.PART_DESC as
-      Part_Description, c.MRP_1 as MRP, current_timestamp() as
-      etl_inserted_date, current_timestamp() as etl_modified_date,
-      'platform_admin' as etl_created_by, 'platform_admin' as etl_updated_by
-      from PM_PART_VAR c inner join PM_PART x ON c.PART_NUM = x.PART_NUM "
-    sequenceNo: 4
+    query: select *, current_timestamp() as etl_inserted_date, current_timestamp()
+      as etl_modified_date, 'platform_admin' as etl_created_by, 'platform_admin'
+      as etl_updated_by from ( select distinct  c.PART_NUM as Part_Number,
+      c.DEALER_MAP_CD as Dealer_Map_Code, C.LOC_CD AS LOCATION_CODE,
+      C.parent_group AS PARENT_GROUP, x.ROOT_PART_NUM as Root_Part_Number,
+      x.PRINCIPAL_MAP_CD as Principal_Map_Code, x.CATG_CD as Part_Category,
+      x.PART_DESC as Part_Description, c.MRP_1 as MRP, '' as resp_user, '' as
+      user_department, '' as vendor_code, '' as vendor_name, '' as model,
+      'Digital Sales' as flag from PM_PART_VAR c inner join PM_PART x ON
+      c.PART_NUM = x.PART_NUM   union  SELECT  distinct PR.PART_CODE as
+      Part_Number, null as Dealer_Map_Code, '' AS LOCATION_CODE, '' AS
+      PARENT_GROUP, '' as Root_Part_Number, null as Principal_Map_Code,
+      PART_CATG as Part_Category, PR.part_desc as Part_Description, null as MRP,
+      PR.PART_RESP_USER as resp_user, PR.part_user_dept as user_department,
+      PR.part_vend_code as vendor_code, PR.part_vend_desc as vendor_name,
+      PR.part_modl as model, 'Critical Parameter' as flag from QACP_PART PR )
+    sequenceNo: 5
     references:
       - alias: PM_PART_1
         sqlReference: PM_PART
       - alias: Spark_SQL_2
         sqlReference: PM_PART_VAR
+      - alias: qacp_part_1
+        sqlReference: QACP_PART
 controlPort:
   dataQualityRules:
     RecordCountCheck:
