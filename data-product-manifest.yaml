@@ -1,4 +1,4 @@
-version: 0.0.55
+version: 0.0.56
 jobId: "737"
 jobName: Parts_Accessories_Master
 jobType: Source Aligned Data Product
@@ -101,6 +101,36 @@ productState:
         description: Mrp
         sourceColumn: MRP_1
         sourceTable: pm_part_var
+      resp_user:
+        type: STRING
+        description: resp_user from qacp_part
+        sourceColumn: PART_RESP_USER
+        sourceTable: qacp_part
+      user_department:
+        type: STRING
+        description: Part user department
+        sourceColumn: part_user_dept
+        sourceTable: qacp_part
+      vendor_code:
+        type: STRING
+        description: Part vendor code from qacp part
+        sourceColumn: part_vend_code
+        sourceTable: qacp_part
+      vendor_name:
+        type: STRING
+        description: Part vendor description from qacp part
+        sourceColumn: part_vend_desc
+        sourceTable: qacp_part
+      model:
+        type: STRING
+        description: part model from qacp part
+        sourceColumn: part_modl
+        sourceTable: qacp_part
+      flag:
+        type: STRING
+        description: Flag for differentiating digital sales and critical parameter
+        sourceColumn: Manual
+        sourceTable: qacp_part
       etl_inserted_date:
         type: DATETIME
         description: ETL pipeline data insert date
