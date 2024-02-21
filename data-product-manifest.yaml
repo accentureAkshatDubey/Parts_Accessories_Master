@@ -1,10 +1,10 @@
-version: 0.0.60
+version: 0.0.61
 jobId: "737"
-jobName: Parts_Accessories_Master
+jobName: Parts Accessories Master
 jobType: Source Aligned Data Product
 alias: INGESTING_THE_DATA_INTO_ATHENA
 discoveryPort:
-  name: Parts_Accessories_Master
+  name: Parts Accessories Master
 inputPorts:
   - alias: PM_PART_1
     isDynamic: true
@@ -165,20 +165,31 @@ productState:
     catalogType: glue
   refreshInterval: 0 10 * * *
 transformation:
-  - alias: Spark_SQL_2
-    type: SQL
+  - isDynamic: true
+    alias: Spark_SQL_2
     description: selecting distinct records
+    sequence: 3
+    inputDataFrameList:
+      - inputDataFrame: PM_PART_VAR_1
+        tempViewName: pm_part_var_test
     query: select distinct *, nvl(modified_date,created_date) as date_check from
       (select distinct
       part_num,loc_cd,dealer_map_cd,parent_group,modified_date,created_date,MRP_1
       from pm_part_var_test ) ppvt
-    sequenceNo: 3
-    references:
-      - alias: PM_PART_VAR_1
-        sqlReference: pm_part_var_test
-  - alias: Spark_SQL_1
-    type: SQL
+    optional:
+      persistDataFrame: false
+    type: operationThroughSqlQuery
+  - isDynamic: true
+    alias: Spark_SQL_1
     description: tranforming data for part and accessories master
+    sequence: 5
+    inputDataFrameList:
+      - inputDataFrame: PM_PART_1
+        tempViewName: PM_PART
+      - inputDataFrame: Spark_SQL_2
+        tempViewName: PM_PART_VAR
+      - inputDataFrame: qacp_part_1
+        tempViewName: QACP_PART
     query: select *, current_timestamp() as etl_inserted_date, current_timestamp()
       as etl_modified_date, 'platform_admin' as etl_created_by, 'platform_admin'
       as etl_updated_by from ( select distinct  c.PART_NUM as Part_Number,
@@ -195,14 +206,9 @@ transformation:
       resp_user, PR.part_user_dept as user_department, PR.part_vend_code as
       vendor_code, PR.part_vend_desc as vendor_name, PR.part_modl as model,
       'Critical Parameter' as flag from QACP_PART PR )
-    sequenceNo: 5
-    references:
-      - alias: PM_PART_1
-        sqlReference: PM_PART
-      - alias: Spark_SQL_2
-        sqlReference: PM_PART_VAR
-      - alias: qacp_part_1
-        sqlReference: QACP_PART
+    optional:
+      persistDataFrame: false
+    type: operationThroughSqlQuery
 controlPort:
   dataQualityRules:
     RecordCountCheck:
