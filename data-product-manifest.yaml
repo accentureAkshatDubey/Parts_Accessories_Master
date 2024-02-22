@@ -1,11 +1,11 @@
-version: 0.0.63
+version: 0.0.64
 jobId: "737"
-jobName: "Parts And Accessories Master"
+jobName: Parts And Accessories Master
 jobType: Source Aligned Data Product
 domain: marketing_and_sales
 alias: INGESTING_THE_DATA_INTO_ATHENA
 discoveryPort:
-  name: "Parts And Accessories Master"
+  name: Parts And Accessories Master
 inputPorts:
   - alias: PM_PART_1
     isDynamic: true
