@@ -1,10 +1,11 @@
-version: 0.0.61
+version: 0.0.62
 jobId: "737"
-jobName: Parts Accessories Master
+jobName: Parts And Accessories Master
 jobType: Source Aligned Data Product
+domain: marketing_and_sales
 alias: INGESTING_THE_DATA_INTO_ATHENA
 discoveryPort:
-  name: Parts Accessories Master
+  name: Parts And Accessories Master
 inputPorts:
   - alias: PM_PART_1
     isDynamic: true
@@ -166,7 +167,7 @@ productState:
   refreshInterval: 0 10 * * *
 transformation:
   - isDynamic: true
-    alias: Spark_SQL_2
+    alias: Pm_part_var_select
     description: selecting distinct records
     sequence: 3
     inputDataFrameList:
@@ -180,13 +181,13 @@ transformation:
       persistDataFrame: false
     type: operationThroughSqlQuery
   - isDynamic: true
-    alias: Spark_SQL_1
+    alias: union_all
     description: tranforming data for part and accessories master
     sequence: 5
     inputDataFrameList:
       - inputDataFrame: PM_PART_1
         tempViewName: PM_PART
-      - inputDataFrame: Spark_SQL_2
+      - inputDataFrame: Pm_part_var_select
         tempViewName: PM_PART_VAR
       - inputDataFrame: qacp_part_1
         tempViewName: QACP_PART
