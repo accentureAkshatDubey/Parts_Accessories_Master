@@ -1,4 +1,4 @@
-version: 0.0.66
+version: 0.0.67
 jobId: "737"
 jobName: Parts Accessories Master
 jobType: Source Aligned Data Product
@@ -164,7 +164,7 @@ productState:
     enforceSchema: false
     enforceSchemaMethod: Warning
     catalogType: glue
-  refreshInterval: 0 10 * * *
+  refreshInterval: 00 5 * * *
 transformation:
   - isDynamic: true
     alias: Pm_part_var_select
