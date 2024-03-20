@@ -1,4 +1,4 @@
-version: 0.0.67
+version: 0.0.68
 jobId: "737"
 jobName: Parts Accessories Master
 jobType: Source Aligned Data Product
@@ -153,7 +153,7 @@ productState:
         sourceColumn: manual
         sourceTable: manual
   stateStoreType: loadDataIceberg
-  isProfilingEnabled: false
+  isProfilingEnabled: true
   updateStrategy: Overwrite
   tableName: msil_dataverse_marketing_and_sales_catalog.Parts_Accessories_Master
   warehousePath: " s3://msil-dataverse-marketing-and-sales/"
@@ -216,6 +216,14 @@ controlPort:
       productState:
         expression: ">="
         number: 1
+        referenceAlias: INGESTING_THE_DATA_INTO_ATHENA
+    NullValueCheck:
+      productState:
+        checks:
+          - column: Part_Number
+          - column: Dealer_Map_Code
+          - column: PARENT_GROUP
+          - column: LOCATION_CODE
         referenceAlias: INGESTING_THE_DATA_INTO_ATHENA
 outputPort:
   subscriptionChannels:
