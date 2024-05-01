@@ -1,4 +1,4 @@
-version: 0.0.68
+version: 0.0.70
 jobId: "737"
 jobName: Parts Accessories Master
 jobType: Source Aligned Data Product
@@ -221,13 +221,6 @@ controlPort:
       productState:
         checks:
           - column: Part_Number
-          - column: Dealer_Map_Code
           - column: PARENT_GROUP
           - column: LOCATION_CODE
         referenceAlias: INGESTING_THE_DATA_INTO_ATHENA
-outputPort:
-  subscriptionChannels:
-    - channelType: Postgres
-      queryType: SQL
-    - channelType: Dataproduct
-      queryType: SQL
